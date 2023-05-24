@@ -1,0 +1,99 @@
+# Batch Connect app configuration file
+#
+# @note Used to define the submitted cluster, title, description, and
+#   hard-coded/user-defined attributes that make up this Batch Connect app.
+---
+
+# **MUST** set cluster id here that matches cluster configuration file located
+# under /etc/ood/config/clusters.d/*.yml
+# @example Use the Owens cluster at Ohio Supercomputer Center
+#     cluster: "owens"
+cluster: "slurm_deepops"
+
+# Define attribute values that aren't meant to be modified by the user within
+# the Dashboard form
+attributes:
+  # Set the corresponding modules that need to be loaded for Jupyter to run
+  #
+  # @note It is called within the batch job as `module load <modules>` if
+  #   defined
+  # @example Do not load any modules
+  #     modules: ""
+  # @example Using default python module
+  #     modules: "python"
+  # @example Using specific python module
+  #     modules: "python/3.5"
+  # @example Using combination of modules
+  #     modules: "python/3.5 cuda/8.0.44"
+  modules: "singularity"
+
+  # Any extra command line arguments to feed to the `jupyter notebook ...`
+  # command that launches the Jupyter notebook within the batch job
+  extra_jupyter_args: ""
+  bc_account:
+    label: "Account"
+    widget: "select"
+    value: "basic"
+    options:
+      - [
+          "BASIC (3H) GPU=2", "basic",
+          data-set-bc-num-hours: '3',
+          data-max-bc-gpus: '2'
+        ]
+      - [
+          "SHORT (24H) GPU=1", "short",
+          data-set-bc-num-hours: '24',
+          data-max-bc-gpus: '1'
+        ]
+      - [
+          "LONG (7D) GPU=1", "long",
+          data-set-bc-num-hours: '168',
+          data-max-bc-gpus: '1'
+        ]
+    display: true
+
+  jupyter_interface:
+    label: "Jupyter Interface"
+    widget: "select"
+    value: "notebook"
+    options:
+      - ["Jupyter Lab", "lab"]
+      - ["Jupyter Notebook", "notebook"]
+    display: true
+
+  singularity_container:
+    label: "NVIDIA Container Image"
+    widget: "select"
+    value: "tensorflow-23.04-tf2-py3.sif"
+    options:
+      - ["tensorflow-23.04-tf2-py3.sif", "tensorflow-23.04-tf2-py3.sif"]
+    display: true
+
+  bc_gpus:
+    label: "GPU"
+    widget: 'number_field'
+    min: 0
+    display: true
+
+  bc_cpus:
+    label: "CPU"
+    widget: 'number_field'
+    min: 1
+    display: true
+
+  bc_queue:
+    value: "batch"
+    default: "batch"
+    display: true
+
+form:
+  - modules
+  - extra_jupyter_args
+  - bc_account
+  - bc_queue
+  - bc_num_hours
+  - bc_gpus
+  - bc_cpus
+  - jupyter_interface
+  - singularity_container
+  - bc_email_on_started
